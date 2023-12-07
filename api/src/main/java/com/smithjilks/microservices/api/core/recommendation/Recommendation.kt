@@ -1,4 +1,4 @@
-package com.smithjilks.microservices.api.recommendation;
+package com.smithjilks.microservices.api.core.recommendation;
 
 
 data class Recommendation(

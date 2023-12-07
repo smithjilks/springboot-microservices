@@ -1,4 +1,4 @@
-package com.smithjilks.microservices.api.review
+package com.smithjilks.microservices.api.core.review
 
 
 data class Review(

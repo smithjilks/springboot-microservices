@@ -1,4 +1,4 @@
-package com.smithjilks.microservices.api.product
+package com.smithjilks.microservices.api.core.product
 
 data class Product(
     val productId: Int,
