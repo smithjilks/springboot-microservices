@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class RecommendationServiceApplication
 
 fun main(args: Array<String>) {
-	runApplication<RecommendationServiceApplication>(*args)
+    runApplication<RecommendationServiceApplication>(*args)
 }

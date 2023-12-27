@@ -1,13 +1,12 @@
 package com.smithjilks.microservices.util
 
 
-import org.springframework.http.HttpStatus.NOT_FOUND
-import org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
-
 import com.smithjilks.microservices.api.exceptions.InvalidInputException
 import com.smithjilks.microservices.api.exceptions.NotFoundException
 import mu.KLogging
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseBody

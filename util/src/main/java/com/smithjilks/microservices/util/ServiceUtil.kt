@@ -2,9 +2,9 @@ package com.smithjilks.microservices.util
 
 import mu.KLogging
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import java.net.InetAddress
 import java.net.UnknownHostException
-import org.springframework.stereotype.Component;
 
 @Component
 class ServiceUtil {
@@ -14,7 +14,7 @@ class ServiceUtil {
 
     companion object : KLogging()
 
-    var serviceAddress: String? = null
+    final var serviceAddress: String? = null
         get() {
             if (field == null) {
                 field = findMyHostname() + "/" + findMyIpAddress() + ":" + port

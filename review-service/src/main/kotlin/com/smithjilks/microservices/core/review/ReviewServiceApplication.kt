@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class ReviewServiceApplication
 
 fun main(args: Array<String>) {
-	runApplication<ReviewServiceApplication>(*args)
+    runApplication<ReviewServiceApplication>(*args)
 }
