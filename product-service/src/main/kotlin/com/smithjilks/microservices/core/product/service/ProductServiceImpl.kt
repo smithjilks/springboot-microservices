@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 class ProductServiceImpl(val serviceUtil: ServiceUtil) : ProductService {
     override fun getProduct(productId: Int): Product? {
         return Product(
-            productId, "name-$productId", 123,
+            productId, "name-$productId", 123F,
             serviceUtil.serviceAddress ?: ""
         )
     }
