@@ -26,6 +26,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
+    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.3.0")
 
     implementation(project(":api"))
     implementation(project(":util"))

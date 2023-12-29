@@ -1,9 +1,34 @@
 package com.smithjilks.microservices.api.composite.product
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 
+@Tag(name = "ProductComposite", description = "REST API for composite product information.")
 interface ProductCompositeService {
-    @GetMapping(value = ["/product-composite/{productId}"], produces = ["application/json"])
+
+    /**
+     * Sample usage: "curl $HOST:$PORT/product-composite/1".
+     *
+     * @param productId Id of the product
+     * @return the composite product info, if found
+     */
+    @Operation(
+        summary = "\${api.product-composite.get-composite-product.description}",
+        description = "\${api.product-composite.get-composite-product.notes}"
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "\${api.responseCodes.ok.description}"),
+        ApiResponse(responseCode = "400", description = "\${api.responseCodes.badRequest.description}"),
+        ApiResponse(responseCode = "404", description = "\${api.responseCodes.notFound.description}"),
+        ApiResponse(responseCode = "422", description = "\${api.responseCodes.unprocessableEntity.description}")
+    )
+    @GetMapping(
+        value = ["/product-composite/{productId}"],
+        produces = ["application/json"]
+    )
     fun getProduct(@PathVariable productId: Int): ProductAggregate
 }
