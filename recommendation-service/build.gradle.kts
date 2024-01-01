@@ -29,8 +29,20 @@ dependencies {
     implementation(project(":api"))
     implementation(project(":util"))
 
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    //implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+
+    compileOnly("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
+
+
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testImplementation("io.projectreactor:reactor-test")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:mongodb")
 }
 
 tasks.withType<KotlinCompile> {
