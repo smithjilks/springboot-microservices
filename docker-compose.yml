@@ -26,3 +26,36 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+
+  mongodb:
+    image: mongo:7.0.4
+    mem_limit: 512m
+    ports:
+      - "27017:27017"
+    command: mongod
+    healthcheck:
+      test: "mongostat -n 1"
+      interval: 5s
+      timeout: 2s
+      retries: 60
+
+
+  postgres:
+    image: postgres:16.1-alpine3.19
+    mem_limit: 512m
+    ports:
+      - '5438:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=review-db
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+
+    healthcheck:
+      test: "/usr/bin/postgres --user=postgres --password=postgres --execute \"SHOW DATABASES;\""
+      interval: 5s
+      timeout: 2s
+      retries: 60

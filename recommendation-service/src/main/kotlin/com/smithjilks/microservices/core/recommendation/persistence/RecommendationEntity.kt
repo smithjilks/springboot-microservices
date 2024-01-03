@@ -9,12 +9,12 @@ import org.springframework.data.mongodb.core.mapping.Document
 @CompoundIndex(name = "prod-rec-id", unique = true, def = "{'productId': 1, 'recommendationId': 1}")
 data class RecommendationEntity(
     @Id
-    val id: String,
+    val id: String?,
     @Version
-    val version: Int,
+    val version: Int?,
     val productId: Int,
     val recommendationId: Int,
-    val author: String,
+    val author: String?,
     val rating: Int,
-    val content: String
+    val content: String?
 )

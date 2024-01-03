@@ -1,9 +1,10 @@
 package com.smithjilks.microservices.core.product.persitence
 
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.repository.PagingAndSortingRepository
 import java.util.*
 
-interface ProductRepository : PagingAndSortingRepository<ProductEntity, String>, CrudRepository<ProductEntity, String> {
-    fun findProductById(productId: Int): Optional<ProductEntity>
+interface ProductRepository : PagingAndSortingRepository<ProductEntity, String>,
+    MongoRepository<ProductEntity, String> {
+    fun findByProductId(productId: Int): Optional<ProductEntity>
 }

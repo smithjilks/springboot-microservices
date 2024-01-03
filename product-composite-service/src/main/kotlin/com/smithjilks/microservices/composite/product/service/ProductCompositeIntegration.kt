@@ -34,7 +34,7 @@ class ProductCompositeIntegration(
 ) : ProductService, RecommendationService, ReviewService {
     companion object : KLogging()
 
-    private val productServiceUrl: String
+    private final val productServiceUrl: String
     private val recommendationServiceUrl: String
     private val reviewServiceUrl: String
 
@@ -57,21 +57,32 @@ class ProductCompositeIntegration(
             return product
 
         } catch (ex: HttpClientErrorException) {
-            when (HttpStatus.resolve(ex.statusCode.value())) {
-                HttpStatus.NOT_FOUND -> {
-                    throw NotFoundException(getErrorMessage(ex) ?: "")
-                }
+            throw handleHttpClientException(ex)
+        }
+    }
 
-                HttpStatus.UNPROCESSABLE_ENTITY -> {
-                    throw InvalidInputException(getErrorMessage(ex) ?: "")
-                }
+    override fun createProduct(body: Product): Product? {
+        return try {
+            val url = productServiceUrl
+            logger.debug { "Will post a new product to URL: $url" }
+            val product = restTemplate.postForObject(
+                url, body,
+                Product::class.java
+            )
+            logger.debug { "Created a product with id: ${product?.productId}" }
+            product
+        } catch (ex: HttpClientErrorException) {
+            throw handleHttpClientException(ex)
+        }
+    }
 
-                else -> {
-                    logger.warn { "Got an unexpected HTTP erro: ${ex.statusCode}, will throw it" }
-                    logger.warn { "Error body: ${ex.responseBodyAsString}" }
-                    throw ex
-                }
-            }
+    override fun deleteProduct(productId: Int) {
+        try {
+            val url = "$productServiceUrl/$productId"
+            logger.debug { "Will call the deleteProduct API on URL: $url" }
+            restTemplate.delete(url)
+        } catch (ex: HttpClientErrorException) {
+            throw handleHttpClientException(ex)
         }
     }
 
@@ -92,6 +103,28 @@ class ProductCompositeIntegration(
         }
     }
 
+    override fun createRecommendation(body: Recommendation): Recommendation? {
+        return try {
+            val url = recommendationServiceUrl
+            logger.debug { "Will post a new recommendation to URL: $url" }
+            val recommendation = restTemplate.postForObject(url, body, Recommendation::class.java)
+            logger.debug { "Created a recommendation with id: ${recommendation?.productId}" }
+            recommendation
+        } catch (ex: HttpClientErrorException) {
+            throw handleHttpClientException(ex)
+        }
+    }
+
+    override fun deleteRecommendations(productId: Int) {
+        try {
+            val url = "$recommendationServiceUrl?productId=$productId"
+            logger.debug { "Will call the deleteRecommendations API on URL: $url" }
+            restTemplate.delete(url)
+        } catch (ex: HttpClientErrorException) {
+            throw handleHttpClientException(ex)
+        }
+    }
+
     override fun getReviews(productId: Int): List<Review> {
         return try {
             val url = reviewServiceUrl + productId
@@ -109,11 +142,48 @@ class ProductCompositeIntegration(
         }
     }
 
+    override fun createReview(body: Review): Review? {
+        return try {
+            val url = reviewServiceUrl
+            logger.debug { "Will post a new review to URL: $url" }
+            val review = restTemplate.postForObject(url, body, Review::class.java)
+            logger.debug { "Created a review with id: ${review?.productId}" }
+            review
+        } catch (ex: HttpClientErrorException) {
+            throw handleHttpClientException(ex)
+        }
+    }
+
+    override fun deleteReviews(productId: Int) {
+        try {
+            val url = "$reviewServiceUrl?productId=$productId"
+            logger.debug("Will call the deleteReviews API on URL: $url")
+            restTemplate.delete(url)
+        } catch (ex: HttpClientErrorException) {
+            throw handleHttpClientException(ex)
+        }
+    }
+
     private fun getErrorMessage(ex: HttpClientErrorException): String? {
         return try {
             objectMapper.readValue(ex.responseBodyAsString, HttpErrorInfo::class.java).message
         } catch (ioException: IOException) {
             ex.message
+        }
+    }
+
+    private fun handleHttpClientException(ex: HttpClientErrorException): RuntimeException {
+        return when (HttpStatus.resolve(ex.statusCode.value())) {
+            HttpStatus.NOT_FOUND -> NotFoundException(
+                getErrorMessage(ex)!!
+            )
+
+            HttpStatus.UNPROCESSABLE_ENTITY -> InvalidInputException(getErrorMessage(ex)!!)
+            else -> {
+                logger.warn { "Got an unexpected HTTP error: ${ex.statusCode}, will rethrow it" }
+                logger.warn { "Error body: ${ex.responseBodyAsString}" }
+                ex
+            }
         }
     }
 }

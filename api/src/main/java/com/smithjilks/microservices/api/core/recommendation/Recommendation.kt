@@ -1,4 +1,4 @@
-package com.smithjilks.microservices.api.core.recommendation;
+package com.smithjilks.microservices.api.core.recommendation
 
 
 data class Recommendation(
@@ -7,5 +7,5 @@ data class Recommendation(
     val author: String,
     val rate: Int,
     val content: String,
-    val serviceAddress: String
+    val serviceAddress: String?
 )

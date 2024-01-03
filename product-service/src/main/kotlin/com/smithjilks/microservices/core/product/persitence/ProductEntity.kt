@@ -8,11 +8,11 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = "products")
 data class ProductEntity(
     @Id
-    val id: String,
+    val id: String? = null,
     @Version
-    val version: Int,
+    val version: Int? = null,
     @Indexed(unique = true)
     val productId: Int,
-    val name: String,
+    val name: String?,
     val weight: Float
 )

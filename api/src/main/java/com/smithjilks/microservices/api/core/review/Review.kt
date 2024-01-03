@@ -7,5 +7,5 @@ data class Review(
     val author: String,
     val subject: String,
     val content: String,
-    val serviceAddress: String
+    val serviceAddress: String?
 )

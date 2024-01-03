@@ -33,7 +33,7 @@ dependencies {
 
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     //implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
 
     compileOnly("org.mapstruct:mapstruct-processor:1.5.5.Final")

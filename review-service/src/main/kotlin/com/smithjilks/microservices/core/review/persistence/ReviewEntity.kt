@@ -9,7 +9,7 @@ import jakarta.persistence.*
 )
 data class ReviewEntity(
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Int,
     @Version
     val version: Int,
