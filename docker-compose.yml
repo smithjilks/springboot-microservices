@@ -28,7 +28,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
 
   mongodb:
-    image: mongo:7.0.4
+    image: mongo:6.0.4
     mem_limit: 512m
     ports:
       - "27017:27017"
@@ -44,7 +44,7 @@ services:
     image: postgres:16.1-alpine3.19
     mem_limit: 512m
     ports:
-      - '5438:5432'
+      - '5432:5432'
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres

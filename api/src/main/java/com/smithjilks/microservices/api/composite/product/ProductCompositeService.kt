@@ -47,6 +47,7 @@ interface ProductCompositeService {
         description = "\${api.product-composite.create-composite-product.notes}"
     )
     @ApiResponses(
+        ApiResponse(responseCode = "200", description = "\${api.responseCodes.ok.description}"),
         ApiResponse(responseCode = "400", description = "\${api.responseCodes.badRequest.description}"),
         ApiResponse(responseCode = "422", description = "\${api.responseCodes.unprocessableEntity.description}")
     )
@@ -64,7 +65,9 @@ interface ProductCompositeService {
         description = "\${api.product-composite.delete-composite-product.notes}"
     )
     @ApiResponses(
+        ApiResponse(responseCode = "200", description = "\${api.responseCodes.ok.description}"),
         ApiResponse(responseCode = "400", description = "\${api.responseCodes.badRequest.description}"),
+        ApiResponse(responseCode = "404", description = "\${api.responseCodes.notFound.description}"),
         ApiResponse(responseCode = "422", description = "\${api.responseCodes.unprocessableEntity.description}")
     )
     @DeleteMapping(value = ["/product-composite/{productId}"])

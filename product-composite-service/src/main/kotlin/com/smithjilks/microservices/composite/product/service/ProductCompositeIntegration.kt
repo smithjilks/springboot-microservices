@@ -39,7 +39,7 @@ class ProductCompositeIntegration(
     private val reviewServiceUrl: String
 
     init {
-        productServiceUrl = "http://$productServiceHost:$productServicePort/product/"
+        productServiceUrl = "http://$productServiceHost:$productServicePort/product"
         recommendationServiceUrl =
             "http://$recommendationServiceHost:$recommendationServicePort/recommendation?productId="
         reviewServiceUrl = "http://$reviewServiceHost:$reviewServicePort/review?productId="
@@ -48,7 +48,7 @@ class ProductCompositeIntegration(
 
     override fun getProduct(productId: Int): Product? {
         try {
-            val url = productServiceUrl + productId
+            val url = "$productServiceUrl/$productId"
             logger.debug { "Will call getProduct API on URL:$url" }
 
             val product = restTemplate.getForObject(url, Product::class.java)
@@ -88,7 +88,7 @@ class ProductCompositeIntegration(
 
     override fun getRecommendations(productId: Int): List<Recommendation> {
         return try {
-            val url = recommendationServiceUrl + productId
+            val url = "$recommendationServiceUrl$productId"
             logger.debug { "Will call getRecommendations API on URL: $url" }
 
             val recommendations = restTemplate
@@ -117,7 +117,7 @@ class ProductCompositeIntegration(
 
     override fun deleteRecommendations(productId: Int) {
         try {
-            val url = "$recommendationServiceUrl?productId=$productId"
+            val url = "$recommendationServiceUrl$productId"
             logger.debug { "Will call the deleteRecommendations API on URL: $url" }
             restTemplate.delete(url)
         } catch (ex: HttpClientErrorException) {
@@ -127,7 +127,7 @@ class ProductCompositeIntegration(
 
     override fun getReviews(productId: Int): List<Review> {
         return try {
-            val url = reviewServiceUrl + productId
+            val url = "$reviewServiceUrl$productId"
             logger.debug { "Will call getReviews API on URL: $url" }
 
             val reviews = restTemplate
@@ -156,7 +156,7 @@ class ProductCompositeIntegration(
 
     override fun deleteReviews(productId: Int) {
         try {
-            val url = "$reviewServiceUrl?productId=$productId"
+            val url = "$reviewServiceUrl$productId"
             logger.debug("Will call the deleteReviews API on URL: $url")
             restTemplate.delete(url)
         } catch (ex: HttpClientErrorException) {
