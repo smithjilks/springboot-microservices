@@ -1,4 +1,4 @@
-package com.smithjilks.microservices.core.recommendation.service
+package com.smithjilks.microservices.core.review.service
 
 import com.smithjilks.microservices.api.core.review.Review
 import com.smithjilks.microservices.api.core.review.ReviewService
