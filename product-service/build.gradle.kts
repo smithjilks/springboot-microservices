@@ -33,8 +33,10 @@ dependencies {
 
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     //implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+    implementation("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
+    implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka")
 
     compileOnly("org.mapstruct:mapstruct-processor:1.5.5.Final")
     kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
@@ -46,6 +48,12 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mongodb")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.0")
+    }
 }
 
 tasks.withType<KotlinCompile> {

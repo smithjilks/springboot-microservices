@@ -1,10 +1,8 @@
 package com.smithjilks.microservices.core.product.persitence
 
-import org.springframework.data.repository.CrudRepository
-import org.springframework.data.repository.PagingAndSortingRepository
-import java.util.*
+import org.springframework.data.repository.reactive.ReactiveCrudRepository
+import reactor.core.publisher.Mono
 
-interface ProductRepository : PagingAndSortingRepository<ProductEntity, String>,
-    CrudRepository<ProductEntity, String> {
-    fun findByProductId(productId: Int): Optional<ProductEntity>
+interface ProductRepository : ReactiveCrudRepository<ProductEntity, String> {
+    fun findByProductId(productId: Int): Mono<ProductEntity>
 }

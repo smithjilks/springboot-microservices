@@ -7,7 +7,7 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.context.event.EventListener
-import org.springframework.data.mongodb.core.MongoOperations
+import org.springframework.data.mongodb.core.ReactiveMongoOperations
 import org.springframework.data.mongodb.core.index.IndexDefinition
 import org.springframework.data.mongodb.core.index.IndexResolver
 import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver
@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexRes
 @ComponentScan("com.smithjilks.microservices")
 class ProductServiceApplication {
     @Autowired
-    lateinit var mongoTemplate: MongoOperations
+    lateinit var mongoTemplate: ReactiveMongoOperations
 
     @EventListener(ContextRefreshedEvent::class)
     fun initIndicesAfterStartup() {

@@ -22,67 +22,67 @@ internal class PersistenceTests : MongoDbTestBase() {
 
     @BeforeEach
     fun setupDb() {
-        repository.deleteAll()
+        repository.deleteAll().block()
         val entity = RecommendationEntity("1", null, 1, 1, "a", 3, "c")
-        savedEntity = repository.save(entity)
+        savedEntity = repository.save(entity).block()!!
         assertEqualsRecommendation(entity, savedEntity)
     }
 
     @Test
     fun create() {
         val newEntity = RecommendationEntity("4", null, 3, 3, "a", 3, "c")
-        repository.save(newEntity)
-        val foundEntity = repository.findById(newEntity.id!!).get()
-        assertEqualsRecommendation(newEntity, foundEntity)
-        Assertions.assertEquals(2, repository.count())
+        repository.save(newEntity).block()
+        val foundEntity = repository.findById(newEntity.id!!).block()
+        assertEqualsRecommendation(newEntity, foundEntity!!)
+        Assertions.assertEquals(2, repository.count().block())
     }
 
     @Test
     fun update() {
-        repository.save(savedEntity.copy(author = "a2"))
-        val (_, version, _, _, author) = repository.findById(savedEntity.id!!).get()
+        repository.save(savedEntity.copy(author = "a2")).block()
+        val (_, version, _, _, author) = repository.findById(savedEntity.id!!).block()!!
         Assertions.assertEquals(1, version!!.toLong())
         Assertions.assertEquals("a2", author)
     }
 
     @Test
     fun delete() {
-        repository.delete(savedEntity)
-        Assertions.assertFalse(repository.existsById(savedEntity.id!!))
+        repository.delete(savedEntity).block()
+        repository.existsById(savedEntity.id!!).block()?.let { Assertions.assertFalse(it) }
     }
 
     @Test
     fun getByProductId() {
-        val entityList = repository.findByProductId(savedEntity.productId)
+        val entityList = repository.findByProductId(savedEntity.productId).collectList().block()
         assertThat(entityList, hasSize(1))
-        assertEqualsRecommendation(savedEntity, entityList[0])
+        assertEqualsRecommendation(savedEntity, entityList?.get(0)!!)
     }
 
     @Test
     fun duplicateError() {
         Assertions.assertThrows(DuplicateKeyException::class.java) {
             val entity = RecommendationEntity("1", null, 1, 2, "a", 3, "c")
-            repository.save<RecommendationEntity>(entity)
+            repository.save<RecommendationEntity>(entity).block()
         }
     }
 
     @Test
     fun optimisticLockError() {
         // Store the saved entity in two separate entity objects
-        val entity1 = repository.findById(savedEntity.id!!).get()
-        val entity2 = repository.findById(savedEntity.id!!).get()
+        val entity1 = repository.findById(savedEntity.id!!).block()
+        val entity2 = repository.findById(savedEntity.id!!).block()
 
         // Update the entity using the first entity object
-        repository.save(entity1.copy(author = "a1"))
+        repository.save(entity1!!.copy(author = "a1")).block()
 
         //  Update the entity using the second entity object.
         // This should fail since the second entity now holds an old version number, i.e. an Optimistic Lock Error
         Assertions.assertThrows(OptimisticLockingFailureException::class.java) {
-            repository.save<RecommendationEntity>(entity2.copy(author = "a2"))
+            repository.save<RecommendationEntity>(entity2!!.copy(author = "a2")).block()
         }
 
         // Get the updated entity from the database and verify its new state
-        val (_, version, _, _, author) = repository.findById(savedEntity.id!!).get()
+        val (_, version, _, _, author) = repository.findById(savedEntity.id!!).block()!!
         Assertions.assertEquals(1, version as Int)
         Assertions.assertEquals("a1", author)
     }

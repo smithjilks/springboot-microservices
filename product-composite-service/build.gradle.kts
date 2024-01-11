@@ -29,6 +29,9 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.3.0")
 
+    implementation("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
+    implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka")
+
     implementation(project(":api"))
     implementation(project(":util"))
 
@@ -36,8 +39,15 @@ dependencies {
 
     compileOnly("org.mapstruct:mapstruct-processor:1.5.5.Final")
     kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    testImplementation("org.springframework.cloud:spring-cloud-stream-test-binder")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.0")
+    }
 }
 
 tasks.withType<KotlinCompile> {
