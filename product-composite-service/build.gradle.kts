@@ -32,6 +32,9 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
     implementation("org.springframework.cloud:spring-cloud-starter-stream-kafka")
 
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+
+
     implementation(project(":api"))
     implementation(project(":util"))
 

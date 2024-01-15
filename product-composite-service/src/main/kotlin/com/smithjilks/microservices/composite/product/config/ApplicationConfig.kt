@@ -6,9 +6,11 @@ import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.info.License
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 class ApplicationConfig {
@@ -81,4 +83,13 @@ class ApplicationConfig {
                     .url(apiExternalDocUrl)
             )
     }
+
+
+    /**
+     * To be able to look up available microservice instances
+     * * through the Eureka service in product-composite microservice
+     */
+    @Bean
+    @LoadBalanced
+    fun loadBalancedWebClientBuilder(): WebClient.Builder = WebClient.builder()
 }

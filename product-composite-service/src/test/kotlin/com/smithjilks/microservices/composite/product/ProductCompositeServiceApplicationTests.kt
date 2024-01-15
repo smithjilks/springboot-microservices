@@ -22,7 +22,10 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = ["eureka.client.enabled=false"]
+)
 @ActiveProfiles("test")
 @AutoConfigureWebTestClient(timeout = "36000")
 class ProductCompositeServiceApplicationTests {

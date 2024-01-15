@@ -21,7 +21,10 @@ import reactor.core.publisher.Mono.just
 import java.util.function.Consumer
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = ["eureka.client.enabled=false"]
+)
 @AutoConfigureWebTestClient(timeout = "36000")
 @Testcontainers
 class ProductServiceApplicationTests : MongoDbTestBase() {

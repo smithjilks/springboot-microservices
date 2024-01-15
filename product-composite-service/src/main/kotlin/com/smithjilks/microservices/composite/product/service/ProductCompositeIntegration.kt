@@ -13,7 +13,6 @@ import com.smithjilks.microservices.api.exceptions.NotFoundException
 import com.smithjilks.microservices.util.HttpErrorInfo
 import mu.KLogging
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.actuate.health.Health
 import org.springframework.cloud.stream.function.StreamBridge
 import org.springframework.http.HttpStatus
@@ -36,28 +35,27 @@ class ProductCompositeIntegration(
     val restTemplate: RestTemplate,
     val objectMapper: ObjectMapper,
     val streamBridge: StreamBridge,
+    var webClient: WebClient.Builder,
     @Qualifier("publishEventScheduler") val publishEventScheduler: Scheduler,
-    @Value("\${app.product-service.host}") val productServiceHost: String,
-    @Value("\${app.product-service.port}") val productServicePort: Int,
-    @Value("\${app.recommendation-service.host}") val recommendationServiceHost: String,
-    @Value("\${app.recommendation-service.port}") val recommendationServicePort: Int,
-    @Value("\${app.review-service.host}") val reviewServiceHost: String,
-    @Value("\${app.review-service.port}") val reviewServicePort: Int
+//    @Value("\${app.product-service.host}") val productServiceHost: String,
+//    @Value("\${app.product-service.port}") val productServicePort: Int,
+//    @Value("\${app.recommendation-service.host}") val recommendationServiceHost: String,
+//    @Value("\${app.recommendation-service.port}") val recommendationServicePort: Int,
+//    @Value("\${app.review-service.host}") val reviewServiceHost: String,
+//    @Value("\${app.review-service.port}") val reviewServicePort: Int
 ) : ProductService, RecommendationService, ReviewService {
     companion object : KLogging()
 
-    val webClient: WebClient = WebClient.builder().build()
+    private val productServiceUrl = "http://product"
+    private val recommendationServiceUrl = "http://recommendation"
+    private val reviewServiceUrl = "http://review"
 
-    private final val productServiceUrl: String
-    private val recommendationServiceUrl: String
-    private val reviewServiceUrl: String
-
-    init {
-        productServiceUrl = "http://$productServiceHost:$productServicePort/product"
-        recommendationServiceUrl =
-            "http://$recommendationServiceHost:$recommendationServicePort/recommendation"
-        reviewServiceUrl = "http://$reviewServiceHost:$reviewServicePort/review"
-    }
+//    init {
+//        productServiceUrl = "http://$productServiceHost:$productServicePort/product"
+//        recommendationServiceUrl =
+//            "http://$recommendationServiceHost:$recommendationServicePort/recommendation"
+//        reviewServiceUrl = "http://$reviewServiceHost:$reviewServicePort/review"
+//    }
 
     override fun getProduct(productId: Int): Mono<Product>? {
 //        try {
@@ -73,12 +71,13 @@ class ProductCompositeIntegration(
 //            throw handleHttpClientException(ex)
 //        }
 
-        val url = "$productServiceUrl/$productId"
+        val url = "$productServiceUrl/product/$productId"
         logger.debug { "Will call getProduct API on URL:$url" }
 
-        return webClient.get().uri(url).retrieve().bodyToMono(Product::class.java).log(logger.name, FINE).onErrorMap(
-            WebClientResponseException::class.java
-        ) { ex -> handleException(ex) }
+        return webClient.build().get().uri(url).retrieve().bodyToMono(Product::class.java).log(logger.name, FINE)
+            .onErrorMap(
+                WebClientResponseException::class.java
+            ) { ex -> handleException(ex) }
 
     }
 
@@ -132,11 +131,11 @@ class ProductCompositeIntegration(
 //            emptyList()
 //        }
 
-        val url = "$recommendationServiceUrl?productId=$productId"
+        val url = "$recommendationServiceUrl/recommendation?productId=$productId"
         logger.debug { "Will call getRecommendations API on URL: $url" }
 
         // Return an empty result if something goes wrong to make it possible for the composite service to return partial responses
-        return webClient.get().uri(url).retrieve().bodyToFlux(Recommendation::class.java)
+        return webClient.build().get().uri(url).retrieve().bodyToFlux(Recommendation::class.java)
             .log(logger.name, FINE).onErrorResume { empty() }
 
     }
@@ -188,12 +187,12 @@ class ProductCompositeIntegration(
 //            emptyList()
 //        }
 
-        val url = "$reviewServiceUrl?productId=$productId"
+        val url = "$reviewServiceUrl/review?productId=$productId"
 
         logger.debug { "Will call the getReviews API on URL: $url" }
 
         // Return an empty result if something goes wrong to make it possible for the composite service to return partial responses
-        return webClient.get().uri(url).retrieve().bodyToFlux(Review::class.java).log(logger.name, FINE)
+        return webClient.build().get().uri(url).retrieve().bodyToFlux(Review::class.java).log(logger.name, FINE)
             .onErrorResume { empty() }
 
     }
@@ -243,7 +242,7 @@ class ProductCompositeIntegration(
     private fun getHealth(url: String): Mono<Health> {
         val endPoint = "$url/actuator/health"
         logger.debug { "Will call the Health API on URL: $endPoint" }
-        return webClient.get().uri(endPoint).retrieve().bodyToMono(String::class.java)
+        return webClient.build().get().uri(endPoint).retrieve().bodyToMono(String::class.java)
             .map { Health.Builder().up().build() }
             .onErrorResume { ex: Throwable? ->
                 Mono.just(

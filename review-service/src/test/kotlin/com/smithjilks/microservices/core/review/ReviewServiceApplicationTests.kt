@@ -22,7 +22,10 @@ import java.util.function.Consumer
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = ["spring.cloud.stream.defaultBinder=rabbit", "com.logging.level.smithjilks.microservices=DEBUG"]
+    properties = ["spring.cloud.stream.defaultBinder=rabbit",
+        "com.logging.level.smithjilks.microservices=DEBUG",
+        "eureka.client.enabled=false"
+    ]
 )
 @ActiveProfiles("test")
 @AutoConfigureWebTestClient(timeout = "36000")
