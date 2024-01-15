@@ -5,6 +5,9 @@ springdoc:
     - com.smithjilks.microservices.composite.product
   pathsToMatch:
     - /**
+  cache.disabled: true
+
+server.forward-headers-strategy: framework
 
 api:
   common:
