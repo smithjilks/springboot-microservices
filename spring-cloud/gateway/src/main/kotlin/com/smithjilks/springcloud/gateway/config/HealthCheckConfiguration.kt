@@ -35,7 +35,7 @@ class HealthCheckConfiguration(
         val url = "$baseUrl/actuator/health"
         logger.debug { "Setting up a cll to the Health API on URL: $url" }
         return webClient.build().get().uri(url).retrieve().bodyToMono(String::class.java)
-            .map { s -> Health.Builder().up().build() }
+            .map { _ -> Health.Builder().up().build() }
             .onErrorResume { ex -> Mono.just(Health.Builder().down(ex).build()) }
             .log(logger.name, Level.FINE)
     }
