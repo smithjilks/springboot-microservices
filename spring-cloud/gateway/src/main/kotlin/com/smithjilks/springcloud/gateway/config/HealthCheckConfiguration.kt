@@ -27,13 +27,14 @@ class HealthCheckConfiguration(
         registry.put("recommendation") { getHealth("http://recommendation") }
         registry.put("review") { getHealth("http://review") }
         registry.put("product-composite") { getHealth("http://product-composite") }
+        registry.put("auth-server") { getHealth("http://auth-server") }
 
         return CompositeReactiveHealthContributor.fromMap(registry)
     }
 
     private fun getHealth(baseUrl: String): Mono<Health> {
         val url = "$baseUrl/actuator/health"
-        logger.debug { "Setting up a cll to the Health API on URL: $url" }
+        logger.debug { "Setting up a call to the Health API on URL: $url" }
         return webClient.build().get().uri(url).retrieve().bodyToMono(String::class.java)
             .map { _ -> Health.Builder().up().build() }
             .onErrorResume { ex -> Mono.just(Health.Builder().down(ex).build()) }

@@ -1,4 +1,4 @@
-server.port: 8080
+server.port: 8443
 
 spring.application.name: gateway
 
@@ -7,8 +7,6 @@ server.ssl:
   key-store: classpath:keystore/edge.p12  #Not recommended for production use. Consider replacing the self-signed cert at runtime
   key-store-password: password
   key-alias: localhost
-  key-password: password
-  enabled: true
 
 app:
   eureka-username: u
@@ -34,10 +32,30 @@ spring.cloud.gateway.routes:
     predicates:
       - Path=/product-composite/**
 
+  - id: oauth2-server
+    uri: lb://auth-server
+    predicates:
+      - Path=/oauth2/**
+
+  - id: oauth2-login
+    uri: lb://auth-server
+    predicates:
+      - Path=/login/**
+
+  - id: oauth2-error
+    uri: lb://auth-server
+    predicates:
+      - Path=/error/**
+
   - id: product-composite-swagger-ui
     uri: lb://product-composite
     predicates:
       - Path=/openapi/**
+
+  - id: product-composite-swagger-ui-webjars
+    uri: lb://product-composite
+    predicates:
+      - Path=/webjars/**
 
   - id: eureka-api
     uri: http://${app.eureka-server}:8761
