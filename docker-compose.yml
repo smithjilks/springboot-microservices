@@ -6,6 +6,11 @@ services:
     mem_limit: 512m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   recommendation:
     build: ./recommendation-service
@@ -18,6 +23,11 @@ services:
     mem_limit: 512m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   product-composite:
     build: ./product-composite-service
@@ -60,17 +70,17 @@ services:
         max-file: "3"
 
     healthcheck:
-      test: "/usr/bin/postgres --user=postgres --password=postgres --execute \"SHOW DATABASES;\""
-      interval: 5s
-      timeout: 2s
-      retries: 60
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 1s
+      timeout: 5s
+      retries: 10
 
   rabbitmq:
     image: rabbitmq:3.11.8-management
     mem_limit: 512m
     ports:
-      - 5672:5672
-      - 15672:15672
+      - '5672:5672'
+      - '15672:15672'
     healthcheck:
       test: [ "CMD", "rabbitmqctl", "status" ]
       interval: 5s
