@@ -3,6 +3,7 @@ package com.smithjilks.springcloud.authorizationserver.config
 import mu.KLogging
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.core.userdetails.User
@@ -23,7 +24,9 @@ class DefaultSecurityConfig {
                 authorizeRequests
                     .requestMatchers("/actuator/**").permitAll()
                     .anyRequest().authenticated()
-            }.build()
+            }
+            .formLogin(Customizer.withDefaults())
+            .build()
     }
 
     @Bean
